@@ -82,9 +82,25 @@ class Master_rack extends CI_Controller
 
 	public function edit(){
 		$post = $this->input->post(null, TRUE);
+		// $no_rack1 = $post['no_rack'][0];
+		// echo count($post['no_rack']);
     // print_r($post);
     // die;
     $this->Master_rack_model->edit($post);
+
+		$no_rack = ($post['no_rack']);
+
+		// Insert data untuk no_rack[1] dan seterusnya
+    for ($i = 1; $i < count($no_rack); $i++) {
+			if (!empty($no_rack[$i])) {
+				$data = array(
+					'id_area_gudang' => $post['id_area_gudang'],
+					'nama_rack' => $post['nama_rack'],
+					'no_rack' => $no_rack[$i]
+				);
+				$this->db->insert('tbl_rack', $data);
+			}
+		}
 
     if($this->db->affected_rows()){
       echo
@@ -101,6 +117,28 @@ class Master_rack extends CI_Controller
         </script>";
     }
 	}
+
+	// public function edit(){
+	// 	$post = $this->input->post(null, TRUE);
+  //   print_r($post);
+  //   die;
+  //   $this->Master_rack_model->edit($post);
+
+  //   if($this->db->affected_rows()){
+  //     echo
+  //       "<script>
+  //         alert('Data berhasil diubah');
+  //         window.location = '".site_url('master/master_rack')."'
+  //       </script>";
+  //   }
+  //   else{
+  //     echo
+  //       "<script>
+  //         alert('Gagal ubah data!');
+  //         window.location = '".site_url('master/master_rack')."'
+  //       </script>";
+  //   }
+	// }
 
 	
 

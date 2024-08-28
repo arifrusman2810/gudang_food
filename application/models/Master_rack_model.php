@@ -23,7 +23,7 @@ class Master_rack_model extends CI_Model {
 		$this->db->insert_batch('tbl_rack', $data);
 	}
 
-	public function get_rack_by_id($id_rack) {
+	public function get_rack_by_id($id_rack){
     $this->db->where('id_rack', $id_rack);
     $query = $this->db->get('tbl_rack');
     return $query->row_array(); // Mengembalikan data dalam bentuk array asosiatif
@@ -33,13 +33,23 @@ class Master_rack_model extends CI_Model {
     $params = array(
       'id_area_gudang' => $post['id_area_gudang'],
       'nama_rack'      => $post['nama_rack'],
-      'no_rack'        => $post['no_rack'],
+      'no_rack'        => $post['no_rack'][0],
     );
     $id = $post['id_rack'];
     $this->db->where('id_rack', $id);
     $this->db->update('tbl_rack', $params);
   }
-
+	
+	// public function edit($post){
+  //   $params = array(
+  //     'id_area_gudang' => $post['id_area_gudang'],
+  //     'nama_rack'      => $post['nama_rack'],
+  //     'no_rack'        => $post['no_rack'],
+  //   );
+  //   $id = $post['id_rack'];
+  //   $this->db->where('id_rack', $id);
+  //   $this->db->update('tbl_rack', $params);
+  // }
 
 	public function get_departments() {
 		return $this->db->get('tbl_departement')->result_array();
