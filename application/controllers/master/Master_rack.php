@@ -8,13 +8,13 @@ class Master_rack extends CI_Controller
 		parent::__construct();
 		is_logged_in();
 		$this->load->library('form_validation');
-		$this->load->model('Master_rack_model');
+		$this->load->model(['Master_rack_model', 'master_gudang_model']);
 	}
 
 	public function index(){
 	$data = [
 		'title' => 'Master_rack',
-		'departments' => $this->Master_rack_model->get_department('tbl_departement', 'id_department'),
+		'area_gudang' => $this->master_gudang_model->get()->result(),
 		'rack' => $this->Master_rack_model->get()->result()
 	];
 
@@ -39,7 +39,18 @@ class Master_rack extends CI_Controller
 		$post = $this->input->post(null, TRUE);
 		// print_r($post);
 		// die;
-    $this->Master_rack_model->add($post);
+
+		// Prepare data for insert
+    $data = [];
+    foreach ($post['no_rack'] as $no) {
+			$data[] = [
+				'id_area_gudang' => $post['id_area_gudang'],
+				'nama_rack' => $post['nama_rack'],
+				'no_rack' => $no,
+			];
+    }
+
+    $this->Master_rack_model->insert_batch($data);
 
     if($this->db->affected_rows()){
       echo
@@ -63,6 +74,10 @@ class Master_rack extends CI_Controller
     $rack_data = $this->Master_rack_model->get_rack_by_id($id_rack);
 
     echo json_encode($rack_data);
+
+		// Mengirim keview
+		// $data['rack_json'] = json_encode($rack_data);
+		// $this->load->view('master_rack/index', $data);
 	}
 
 	public function edit(){

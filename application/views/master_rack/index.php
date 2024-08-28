@@ -22,6 +22,7 @@
 					<tr>
 						<th>No</th>
 						<th>Area Gudang</th>
+						<th>Jenis Gudang</th>
 						<th>Nama Rack</th>
 						<th>Aksi</th>
 					</tr>
@@ -33,8 +34,9 @@
 					?>
 					<tr>
 						<td><?= $no++; ?></td>
-						<td><?= $data->area_rack; ?></td>
-						<td><?= $data->kode_rack; ?></td>
+						<td><?= $data->nama_area; ?></td>
+						<td><?= $data->jenis_gudang; ?></td>
+						<td><?= $data->nama_rack; ?></td>
 						<td>
 							<button data-toggle="modal" data-target="#modal-edit" class="edit-rack btn btn-primary" data-id="<?= $data->id_rack; ?>">
 								<i class="fas fa-edit"></i>
@@ -62,19 +64,45 @@
 					<div class="card-body">
 			
 					<div class="form-group row">
-							<label for="area_rack" class="col-sm-3 col-form-label">Area Rack</label>
+							<label for="area_rack" class="col-sm-3 col-form-label">Area Gudang</label>
 							<div class="col-sm-9">
-								<input type="text" name="area_rack" class="form-control" id="area_rack" placeholder="Kaleng" required>
+								<select name="id_area_gudang" id="" class="form-control" required>
+									<option value="">-- Pilih area gudang --</option>
+									<?php foreach($area_gudang as $data): ?>
+										<option value="<?= $data->id_area_gudang ?>">
+											<?= $data->nama_area; ?> - <?= $data->jenis_gudang; ?>
+										</option>
+									<?php endforeach; ?>
+								</select>
 							</div>
 						</div>
 						<div class="form-group row">
-							<label for="kode_rack" class="col-sm-3 col-form-label">Kode Rack </label>
+							<label for="kode_rack" class="col-sm-3 col-form-label">Nama Rack </label>
 							<div class="col-sm-9">
-								<input type="text" name="kode_rack" class="form-control" id="kode_rack" placeholder="A.54" required>
+								<input type="text" name="nama_rack" class="form-control" id="nama_rack" placeholder="A.54" required>
 							</div>
-							
 						</div>
+
+						<!-- Container for dynamic No Rack fields -->
+						<div id="no-rack-container">
+							<div class="form-group row no-rack-item">
+									<label for="no_rack" class="col-sm-3 col-form-label">No Rack</label>
+									<div class="col-sm-9">
+											<input type="number" name="no_rack[]" class="form-control" placeholder="No rack..." required>
+									</div>
+							</div>
+						</div>
+
 						<div class="form-group row">
+							<div class="col-sm-12 text-right">
+									<button type="button" class="btn btn-primary" id="btn-add-rack">
+											<i class="fas fa-plus"></i> Tambah No Rack
+									</button>
+							</div>
+						</div>
+
+
+						<!-- <div class="form-group row">
 							<label for="no_rack" class="col-sm-3 col-form-label">No Rack</label>
 							<div class="col-sm-9">
 								<input type="number" name="no_rack" class="form-control" id="no_rack" placeholder="No rack..." required>
@@ -83,10 +111,12 @@
 						<div class="form-group row">
 							<div class="col-sm-12 text-right">
 								<button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close">
-									<i class="fas fa-plus"></i> Add jenis Rack
+									<i class="fas fa-plus"></i> Tambah No Rack
 								</button>
 							</div>
-						</div>
+						</div> -->
+
+
 						<div class="form-group float-right pt-5">
 							<button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
 							<button type="submit" class="btn btn-primary ml-2">Simpan</button>
@@ -94,11 +124,8 @@
 					</div>
 				</form>
 			</div>
-
 		</div>
-		<!-- /.modal-content -->
 	</div>
-	<!-- /.modal-dialog -->
 </div>
 <!-- /.modal -->
 
@@ -116,16 +143,23 @@
 					<div class="card-body">
 				
 						<div class="form-group row">
-							<label class="col-sm-4 col-form-label">Area Rack</label>
+							<input type="hidden" id="id_rack" name="id_rack" value="">
+							<label class="col-sm-4 col-form-label">Area Gudang</label>
 							<div class="col-sm-8">
-								<input type="hidden" id="id_rack" name="id_rack" value="">
-								<input type="text" name="area_rack" class="form-control" required>
+								<select name="id_area_gudang" id="" class="form-control" required>
+									<option value="">-- Pilih area gudang --</option>
+									<?php foreach($area_gudang as $area): ?>
+										<option value="<?= $area->id_area_gudang; ?>">
+											<?= $area->nama_area; ?>
+										</option>
+									<?php endforeach; ?>
+								</select>
 							</div>
 						</div>
 						<div class="form-group row">
-							<label class="col-sm-4 col-form-label">Kode Rack</label>
+							<label class="col-sm-4 col-form-label">Nama Rack</label>
 							<div class="col-sm-8">
-								<input type="text" name="kode_rack" class="form-control" required>
+								<input type="text" name="nama_rack" class="form-control" required>
 							</div>
 						</div>
 						<div class="form-group row">
@@ -147,6 +181,29 @@
 </div>
 <!-- /.modal -->
 
+<script>
+	$(document).ready(function(){
+    $('#btn-add-rack').on('click', function(){
+			var newRack = `<div class="form-group row no-rack-item">
+											<label for="no_rack" class="col-sm-3 col-form-label">No Rack</label>
+											<div class="col-sm-7">
+													<input type="number" name="no_rack[]" class="form-control" placeholder="No rack..." required>
+											</div>
+											<div class="col-sm-2">
+													<button type="button" class="btn btn-danger btn-remove-rack">
+															<i class="fas fa-trash"></i>
+													</button>
+											</div>
+									</div>`;
+			$('#no-rack-container').append(newRack);
+    });
+
+    $(document).on('click', '.btn-remove-rack', function(){
+			$(this).closest('.no-rack-item').remove();
+    });
+});
+</script>
+
 
 <script>
 	// Mengambil id_rack
@@ -164,8 +221,9 @@
 				success: function(response) {
 					// Isi form modal dengan data dari response
 					$('#modal-edit #id_rack').val(response.id_rack);
-					$('#modal-edit input[name="area_rack"]').val(response.area_rack);
-					$('#modal-edit input[name="kode_rack"]').val(response.kode_rack);
+					// $('#modal-edit input[name="id_area_gudang"]').val(response.id_area_gudang);
+					$('#modal-edit select[name="id_area_gudang"]').val(response.id_area_gudang);
+					$('#modal-edit input[name="nama_rack"]').val(response.nama_rack);
 					$('#modal-edit input[name="no_rack"]').val(response.no_rack);
 					// Buka modal setelah data diisi
 					$('#modal-edit').modal('show');

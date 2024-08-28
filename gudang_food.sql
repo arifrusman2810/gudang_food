@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 28, 2024 at 02:49 AM
+-- Generation Time: Aug 28, 2024 at 08:07 AM
 -- Server version: 10.4.11-MariaDB
 -- PHP Version: 7.4.1
 
@@ -29,26 +29,23 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `tbl_area_gudang` (
-  `id_area_gudang` varchar(255) NOT NULL,
-  `jenis_gudang` varchar(255) DEFAULT NULL,
-  `nama_area` varchar(255) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+  `id_area_gudang` int(11) NOT NULL,
+  `jenis_gudang` varchar(50) NOT NULL,
+  `nama_area` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `tbl_area_gudang`
 --
 
 INSERT INTO `tbl_area_gudang` (`id_area_gudang`, `jenis_gudang`, `nama_area`) VALUES
-('1', 'Gudang Besar', 'ATK'),
-('2', 'Gudang Besar', 'Sticker'),
-('3', 'Gudang Besar', 'Bahan Penolong'),
-('4', 'Gudang Besar', 'Plastik'),
-('5', 'Gudang Besar', 'Kaleng'),
-('6', 'Gudang Besar', 'Kardus'),
-('7', 'Gudang Mekanik', 'Gudang Mekanik'),
-('8', 'Gudang Besar', 'Titipan'),
-('9', 'Gudang Besar', 'Testing'),
-('10', 'Gudang Besar', 'Contoh');
+(1, 'Gudang Besar', 'ATK'),
+(2, 'Gudang Besar', 'Sticker'),
+(3, 'Gudang Besar', 'Plastik'),
+(4, 'Gudang Besar', 'Kaleng'),
+(5, 'Gudang Besar', 'Kardus'),
+(6, 'Gudang Mekanik', 'Gudang Mekanik'),
+(7, 'Gudang Besar', 'Titipan');
 
 -- --------------------------------------------------------
 
@@ -144,8 +141,8 @@ CREATE TABLE `tbl_permintaan_barang` (
 
 CREATE TABLE `tbl_rack` (
   `id_rack` int(11) NOT NULL,
-  `area_rack` varchar(100) NOT NULL,
-  `kode_rack` varchar(20) NOT NULL,
+  `id_area_gudang` int(11) NOT NULL,
+  `nama_rack` varchar(20) NOT NULL,
   `no_rack` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -153,13 +150,13 @@ CREATE TABLE `tbl_rack` (
 -- Dumping data for table `tbl_rack`
 --
 
-INSERT INTO `tbl_rack` (`id_rack`, `area_rack`, `kode_rack`, `no_rack`) VALUES
-(1, 'Kardus', 'KS', 10),
-(2, 'Kaleng', 'A.54', 12),
-(3, 'Sticker', 'AC', 11),
-(4, 'ATK', 'AE.AE edited', 3),
-(5, 'Kaleng', 'A.22', 121),
-(7, 'Kaleng', 'A.32', 4);
+INSERT INTO `tbl_rack` (`id_rack`, `id_area_gudang`, `nama_rack`, `no_rack`) VALUES
+(3, 2, 'A.01', 1),
+(4, 2, 'B.01', 12),
+(5, 3, 'A.23', 4),
+(6, 4, 'A.AB', 1),
+(7, 7, 'A.BB', 5),
+(8, 4, 'A.AB', 3);
 
 -- --------------------------------------------------------
 
@@ -375,7 +372,8 @@ ALTER TABLE `tbl_departement`
 -- Indexes for table `tbl_rack`
 --
 ALTER TABLE `tbl_rack`
-  ADD PRIMARY KEY (`id_rack`);
+  ADD PRIMARY KEY (`id_rack`),
+  ADD KEY `id_area_gudang` (`id_area_gudang`);
 
 --
 -- Indexes for table `tbl_role`
@@ -406,16 +404,32 @@ ALTER TABLE `user`
 --
 
 --
+-- AUTO_INCREMENT for table `tbl_area_gudang`
+--
+ALTER TABLE `tbl_area_gudang`
+  MODIFY `id_area_gudang` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
 -- AUTO_INCREMENT for table `tbl_rack`
 --
 ALTER TABLE `tbl_rack`
-  MODIFY `id_rack` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id_rack` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `tbl_satuan`
 --
 ALTER TABLE `tbl_satuan`
   MODIFY `id_satuan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=96;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `tbl_rack`
+--
+ALTER TABLE `tbl_rack`
+  ADD CONSTRAINT `tbl_rack_ibfk_1` FOREIGN KEY (`id_area_gudang`) REFERENCES `tbl_area_gudang` (`id_area_gudang`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

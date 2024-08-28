@@ -4,18 +4,23 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Master_rack_model extends CI_Model {
 
 	public function get(){
-		$this->db->select('*');
+		$this->db->select('tbl_rack.*, tbl_area_gudang.jenis_gudang, tbl_area_gudang.nama_area');
 		$this->db->from('tbl_rack');
+		$this->db->join('tbl_area_gudang', 'tbl_area_gudang.id_area_gudang = tbl_rack.id_area_gudang');
 		return $this->db->get();
 	}
 
 	public function add($post){
 		$params = array(
-      'area_rack'   => $post['area_rack'],
-      'kode_rack'   => $post['kode_rack'],
-      'no_rack'   => $post['no_rack'],
+      'id_area_gudang' => $post['id_area_gudang'],
+      'nama_rack'      => $post['nama_rack'],
+      'no_rack'  		   => $post['no_rack'],
     );
     $this->db->insert('tbl_rack', $params);
+	}
+
+	public function insert_batch($data){
+		$this->db->insert_batch('tbl_rack', $data);
 	}
 
 	public function get_rack_by_id($id_rack) {
@@ -26,9 +31,9 @@ class Master_rack_model extends CI_Model {
 
 	public function edit($post){
     $params = array(
-      'area_rack'   => $post['area_rack'],
-      'kode_rack'   => $post['kode_rack'],
-      'no_rack'   => $post['no_rack'],
+      'id_area_gudang' => $post['id_area_gudang'],
+      'nama_rack'      => $post['nama_rack'],
+      'no_rack'        => $post['no_rack'],
     );
     $id = $post['id_rack'];
     $this->db->where('id_rack', $id);
