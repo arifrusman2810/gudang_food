@@ -178,3 +178,33 @@ $(document).ready(function(){
     });
 	});
 </script>
+
+
+
+
+<tbody>
+	<?php 
+	if (is_array($departments) && !empty($departments)) {
+		$no = 1; 
+		foreach($departments as $d): 
+	?>
+		<tr>
+			<td><?= $no++; ?></td>
+			<td><?= isset($d['nama_departement']) ? $d['nama_departement'] : 'N/A'; ?></td>
+			<td>
+				<button data-toggle="modal" data-target="#modal-edit-user" class="edit-pengguna btn btn-primary">
+					<i class="fas fa-edit"></i>
+				</button>
+			</td>
+		</tr>
+	<?php 
+		endforeach; 
+	} else {
+	?>
+		<tr>
+			<td colspan="3">Data tidak tersedia</td>
+		</tr>
+	<?php 
+	} 
+	?>
+</tbody>
