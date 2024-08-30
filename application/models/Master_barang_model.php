@@ -26,6 +26,22 @@ class Master_barang_model extends CI_Model {
     $this->db->insert('tbl_barang', $params);
   }
 
+  public function get_barang_by_area($id_area_gudang) {
+    $this->db->select('*');
+    $this->db->from('tbl_barang');
+    $this->db->where('id_area_gudang', $id_area_gudang);
+    $query = $this->db->get();
+    return $query->result_array();
+  }
+
+  public function get_stock_by_barang($id_barang) {
+    $this->db->select('stock');
+    $this->db->where('id_barang', $id_barang);
+    $query = $this->db->get('tbl_barang');
+    return $query->row()->stock; // Ambil nilai stok
+}
+
+
 
 
 

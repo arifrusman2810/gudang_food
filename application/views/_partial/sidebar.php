@@ -22,7 +22,7 @@
 		<nav class="mt-2">
 			<ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
 				<!-- Add icons to the links using the .nav-icon class
-               with font-awesome or any other icon font library -->
+        with font-awesome or any other icon font library -->
 				<li class="nav-item has-treeview">
 					<a href="<?=base_url('dashboard')?>" class="nav-link <?= $title == 'Dashboard' ? 'active' : '' ?>">
 						<i class="nav-icon fas fa-tachometer-alt"></i>
@@ -90,6 +90,29 @@
 							
 						</li>
 						<?php endif; ?>
+					</ul>
+				</li>
+
+				<li class="nav-item has-treeview <?= $this->uri->segment('1') == 'transaksi' ? 'menu-open' : '' ?>">
+					<a href="#" class="nav-link <?= $this->uri->segment('1') == 'transaksi' ? 'active' : '' ?>">
+						<i class="nav-icon fas fa-folder"></i>
+						<p>
+							Transaksi
+							<i class="fas fa-angle-left right"></i>
+						</p>
+					</a>
+					<ul class="nav nav-treeview">
+
+						<li class="nav-item has-treeview <?= $this->uri->segment('1') == 'transaksi' ? 'menu-open' : '' ?>">
+							
+							<a href="<?= base_url('transaksi/permintaan_barang') ?>"
+								class="nav-link <?= $title == 'permintaan_barang' ? 'active' : ''?>">
+								<i class="fas fa-bullhorn nav-icon"></i>
+								<p>Permintaan Barang</p>
+							</a>
+
+						</li>
+
 					</ul>
 				</li>
 				<!-- 

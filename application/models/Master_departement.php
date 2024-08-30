@@ -3,6 +3,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Master_departement extends CI_Model {
 
+    public function get() {
+        return $this->db->get('tbl_departement');
+    }
+    
     public function get_departments() {
         return $this->db->get('tbl_departement')->result_array();
     }
