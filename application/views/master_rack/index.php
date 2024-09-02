@@ -218,76 +218,76 @@
 </script>
 
 <script>
-$(document).ready(function(){
-	$('.edit-rack').on('click', function(){
-		var idRack = $(this).data('id');
+	$(document).ready(function(){
+		$('.edit-rack').on('click', function(){
+			var idRack = $(this).data('id');
 		
-		$.ajax({
-			url: '<?= site_url('master/master_rack/get_rack')?>',
-			type: 'POST',
-			data: {id_rack: idRack},
-			dataType: 'json',
-			success: function(response) {
-				// Isi form modal dengan data dari response
-				$('#modal-edit #id_rack').val(response.id_rack);
-				$('#modal-edit select[name="id_area_gudang"]').val(response.id_area_gudang);
-				$('#modal-edit input[name="nama_rack"]').val(response.nama_rack);
-				
-				// Asumsikan response.no_rack adalah array
-				// Isi nilai No Rack pertama
-				$('#modal-edit #no-rack-container2 input[name="no_rack[]"]').first().val(response.no_rack);
-				
-				// Hapus input No Rack tambahan yang mungkin ada sebelumnya
-				$('#modal-edit .no-rack-item:not(:first)').remove();
-				
-				// Tambahkan input No Rack lainnya jika ada lebih dari satu
-				// for (var i = 1; i < response.no_rack.length; i++) {
-				// 		var newRackInput = `
-				// 				<div class="form-group row no-rack-item">
-				// 						<label for="no_rack" class="col-sm-3 col-form-label">No Rack</label>
-				// 						<div class="col-sm-7">
-				// 								<input type="number" name="no_rack[]" class="form-control" value="${response.no_rack[i]}" required>
-				// 						</div>
-				// 						<div class="col-sm-2">
-				// 								<button type="button" class="btn btn-danger btn-remove-rack">
-				// 										<i class="fas fa-trash-alt"></i>
-				// 								</button>
-				// 						</div>
-				// 				</div>
-				// 		`;
-				// 		$('#no-rack-container2').append(newRackInput);
-				// }
+			$.ajax({
+				url: '<?= site_url('master/master_rack/get_rack')?>',
+				type: 'POST',
+				data: {id_rack: idRack},
+				dataType: 'json',
+				success: function(response) {
+					// Isi form modal dengan data dari response
+					$('#modal-edit #id_rack').val(response.id_rack);
+					$('#modal-edit select[name="id_area_gudang"]').val(response.id_area_gudang);
+					$('#modal-edit input[name="nama_rack"]').val(response.nama_rack);
+					
+					// Asumsikan response.no_rack adalah array
+					// Isi nilai No Rack pertama
+					$('#modal-edit #no-rack-container2 input[name="no_rack[]"]').first().val(response.no_rack);
+					
+					// Hapus input No Rack tambahan yang mungkin ada sebelumnya
+					$('#modal-edit .no-rack-item:not(:first)').remove();
+					
+					// Tambahkan input No Rack lainnya jika ada lebih dari satu
+					// for (var i = 1; i < response.no_rack.length; i++) {
+					// 		var newRackInput = `
+					// 				<div class="form-group row no-rack-item">
+					// 						<label for="no_rack" class="col-sm-3 col-form-label">No Rack</label>
+					// 						<div class="col-sm-7">
+					// 								<input type="number" name="no_rack[]" class="form-control" value="${response.no_rack[i]}" required>
+					// 						</div>
+					// 						<div class="col-sm-2">
+					// 								<button type="button" class="btn btn-danger btn-remove-rack">
+					// 										<i class="fas fa-trash-alt"></i>
+					// 								</button>
+					// 						</div>
+					// 				</div>
+					// 		`;
+					// 		$('#no-rack-container2').append(newRackInput);
+					// }
 
-				// Buka modal setelah data diisi
-				$('#modal-edit').modal('show');
-			}
+					// Buka modal setelah data diisi
+					$('#modal-edit').modal('show');
+				}
+			});
+
 		});
 
-	});
-
-	// Event listener untuk tombol tambah
-	$('#btn-add-rack2').on('click', function() {
-		var newRackInput = `
-			<div class="form-group row no-rack-item">
-				<label for="no_rack" class="col-sm-3 col-form-label">No Rack</label>
-				<div class="col-sm-7">
-					<input type="number" name="no_rack[]" class="form-control" required>
+		// Event listener untuk tombol tambah
+		$('#btn-add-rack2').on('click', function() {
+			var newRackInput = `
+				<div class="form-group row no-rack-item">
+					<label for="no_rack" class="col-sm-3 col-form-label">No Rack</label>
+					<div class="col-sm-7">
+						<input type="number" name="no_rack[]" class="form-control" required>
+					</div>
+					<div class="col-sm-2">
+						<button type="button" class="btn btn-danger btn-remove-rack">
+							<i class="fas fa-trash-alt"></i>
+						</button>
+					</div>
 				</div>
-				<div class="col-sm-2">
-					<button type="button" class="btn btn-danger btn-remove-rack">
-						<i class="fas fa-trash-alt"></i>
-					</button>
-				</div>
-			</div>
-		`;
-		$('#no-rack-container2').append(newRackInput);
-	});
+			`;
+			$('#no-rack-container2').append(newRackInput);
+		});
 
-	// Event listener untuk tombol delete
-	$(document).on('click', '.btn-remove-rack', function() {
-		$(this).closest('.no-rack-item').remove();
+		// Event listener untuk tombol delete
+		$(document).on('click', '.btn-remove-rack', function() {
+			$(this).closest('.no-rack-item').remove();
+		});
 	});
-});
 </script>
 	  
 		

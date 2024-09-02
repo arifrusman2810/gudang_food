@@ -107,6 +107,38 @@ class Permintaan_barang extends CI_Controller{
     }
   }
 
+  public function get_permintaan(){
+    $id = $this->input->post('id_permintaan_barang');
+    $data = $this->permintaan_barang_model->get_permintaan_by_id($id);
+
+    echo json_encode($data);
+  }
+
+  public function approve(){
+    $post = $this->input->post(null, TRUE);
+    // print_r($post);
+    // die;
+
+    if(!empty($post['approve']) && $post['aprrove'] = 1){
+      $this->permintaan_barang_model->approve($post);
+      if($this->db->affected_rows()){
+        echo
+          "<script>
+            alert('Permintaan diapprove!');
+            window.location = '".site_url('transaksi/permintaan_barang')."'
+          </script>";
+      }
+    }
+
+    if(!empty($post['reject']) && $post['reject'] = 1){
+      echo
+        "<script>
+          alert('Permintaan direject!');
+          window.location = '".site_url('transaksi/permintaan_barang')."'
+        </script>";
+    }
+  }
+
 
 
 

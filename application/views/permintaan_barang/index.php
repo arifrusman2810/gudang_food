@@ -70,8 +70,8 @@
 							<td><?= $data->nama_departement; ?></td>
 							<td><?= $data->status; ?></td>
 							<td>
-								<button data-toggle="modal" data-target="#modal-edit" class="edit-barang btn btn-primary" data-id="<?= $data->id_permintaan_barang; ?>">
-									<i class="fas fa-edit"></i>
+								<button data-toggle="modal" data-target="#modal-edit" class="edit-permintaan btn btn-primary" data-id="<?= $data->id_permintaan_barang; ?>">
+									<i class="fas fa-eye"></i>
 								</button>
 							</td>
 						</tr>
@@ -174,30 +174,112 @@
 	</div>
 </div>
 
-<div class="modal fade" id="modal-edit-user">
-	<div class="modal-dialog">
+<div class="modal fade" id="modal-edit">
+	<div class="modal-dialog modal-lg">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title">Edit Departement</h4>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<h4 class="modal-title text-center w-100">Permintaan Pengambilan Barang</h4>
+				<!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
-				</button>
+				</button> -->
 			</div>
 			<div class="modal-body">
-				<form action="javascript:void(0)" id="edit-pengguna" data-url="<?=base_url('Departement/edit')?>" method="post">
+				<form action="<?= site_url('transaksi/permintaan_barang/approve') ?>" method="post">
 					<div class="card-body">
-				
-						<div class="form-group row">
-							<label for="inputPassword" class="col-sm-4 col-form-label">Nama Departement</label>
-							<div class="col-sm-8">
-								<input type="text" name="nama_Departement" class="form-control"
-								>
+						<div class="row">
+							<div class="col-md-6">
+								<table>
+									<tbody>
+										<tr>
+											<td>Nomor Resi</td>
+											<td>&nbsp;:&nbsp;</td>
+											<td id="nomor_resi"></td>
+										</tr>
+										<tr>
+											<td>User Request</td>
+											<td>&nbsp;:&nbsp;</td>
+											<td id="inputed_by"></td>
+										</tr>
+										<tr>
+											<td>Departement</td>
+											<td>&nbsp;:&nbsp;</td>
+											<td id="nama_departement"></td>
+										</tr>
+										<tr>
+											<td>Tgl Permintaan</td>
+											<td>&nbsp;:&nbsp;</td>
+											<td id="waktu_input"></td>
+										</tr>
+										<tr>
+											<td>Keterangan</td>
+											<td>&nbsp;:&nbsp;</td>
+											<td id="note">asdasdasd</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+
+							<div class="col-md-6">
+								<table>
+									<tbody>
+										<tr>
+											<td>Diapprove oleh</td>
+											<td>&nbsp;:&nbsp;</td>
+											<td id="approved_by"></td>
+										</tr>
+										<tr>
+											<td>Tgl Approve</td>
+											<td>&nbsp;:&nbsp;</td>
+											<td id="waktu_approve"></td>
+										</tr>
+									</tbody>
+								</table>
+
 							</div>
 						</div>
-						
+
+						<hr>
+						<table class="table">
+							<thead>
+								<tr>
+									<th>Kode Barang</th>
+									<th>Nama Barang</th>
+									<th>Qty</th>
+									<th>Area Gudang</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>X</td>
+									<td>X</td>
+									<td>X</td>
+									<td>X</td>
+								</tr>
+							</tbody>
+						</table>
+
+						<!-- <div class="row">
+							<div class="col-md-6">
+								<div class="form-group row">
+									<input type="hidden" id="id_permintaan_barang" name="id_permintaan barang" class="form-control">
+									<label for="approve" class="col-sm-5 col-form-label">Approve</label>
+									<div class="col-sm-7">
+										<select name="approve" id="approve" class="form-control" required>
+											<option value="">-- Aksi --</option>
+											<option value="1">Approve</option>
+											<option value="0">Reject</option>
+										</select>
+									</div>
+								</div>
+							</div>
+						</div> -->
 						<div class="form-group float-right pt-5">
+							<input type="hidden" id="id_permintaan_barang" name="id_permintaan_barang" class="form-control">
+							<input type="hidden" id="approved_by" name="approved_by" class="form-control">
+							<input type="hidden" id="gudang_by" name="gudang_by" class="form-control">
 							<button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
-							<button type="submit" class="btn btn-primary ml-2">Simpan</button>
+							<button type="submit" name="reject" value="1" class="btn btn-danger ml-2">Reject</button>
+							<button type="submit" name="approve" value="1" class="btn btn-primary ml-2">Approve</button>
 						</div>
 					</div>
 				</form>
@@ -206,6 +288,53 @@
 	</div>
 </div>
 <!-- /.modal -->
+
+<script>
+	$(document).ready(function(){
+		$('.edit-permintaan').on('click', function(){
+			var idPermintaan = $(this).data('id');
+			// alert(idPermintaan);
+			$.ajax({
+				url: '<?= site_url('transaksi/permintaan_barang/get_permintaan')?>',
+				type: 'POST',
+				data: {id_permintaan_barang: idPermintaan},
+				dataType: 'json',
+				success: function(response) {
+					console.log(response);
+					// alert('Berhasil');
+					// Isi form modal dengan data dari response
+					$('#modal-edit #id_permintaan_barang').val(response.id_permintaan_barang);
+					$('#modal-edit #approved_by').val(response.approved_by);
+					$('#modal-edit #gudang_by').val(response.gudang_by);
+					$('#modal-edit #nomor_resi').text(response.nomor_resi);
+          $('#modal-edit #waktu_input').text(response.waktu_input); // Untuk elemen <td>
+          $('#modal-edit #waktu_approve').text(response.waktu_approve);
+          $('#modal-edit #approved_by').text(response.approved_by);
+					$('#modal-edit #note').text(response.note);
+					$('#modal-edit #inputed_by').text(response.inputed_by);
+					$('#modal-edit #nama_departement').text(response.nama_departement);
+
+					// Bersihkan tabel sebelum diisi dengan data baru
+					$('#modal-edit .table tbody').empty();
+
+					// Iterasi detail permintaan dan tambahkan ke tabel
+					$.each(response.details, function(index, detail) {
+						var row = '<tr>' +
+							'<td>' + detail.kode_barang + '</td>' +
+							'<td>' + detail.nama_barang + '</td>' +
+							'<td>' + detail.qty + '</td>' +
+							'<td>' + detail.jenis_gudang + '(' + detail.nama_area + ') </td>' +
+							'</tr>';
+						$('#modal-edit .table tbody').append(row);
+					});
+
+					// Buka modal setelah data diisi
+					$('#modal-edit').modal('show');
+				}
+			});
+		});
+	});
+</script>
 
 
 <script>
@@ -322,7 +451,7 @@ function fetchBarangOptions(id_area_gudang, callback) {
 </script>
 
 
-<script>
+<!-- <script>
 	function makeTableResponsive() {
 		const tableContainer = document.getElementById('table-container');
 		const table = document.getElementById('department-table');
@@ -392,6 +521,6 @@ function fetchBarangOptions(id_area_gudang, callback) {
 		});
 	});
 
-</script>
+</script> -->
 
 

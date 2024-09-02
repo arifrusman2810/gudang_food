@@ -26,7 +26,7 @@ class Master_rack_model extends CI_Model {
 	public function get_rack_by_id($id_rack){
     $this->db->where('id_rack', $id_rack);
     $query = $this->db->get('tbl_rack');
-    return $query->row_array(); // Mengembalikan data dalam bentuk array asosiatif
+    return $query->row_array();
 	}
 
 	public function edit($post){

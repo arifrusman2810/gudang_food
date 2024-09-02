@@ -616,4 +616,208 @@ function fetchBarangOptions(id_area_gudang, callback) {
 </script>
 
 
+<?php 
+
+function tambah(){  
+
+		// $data['roles'] = $this->Role_model->get_roles();
+		// var_dump($data['roles']);
+		
+		$this->form_validation->set_rules('nama_pengguna', 'Nama Pengguna', 'trim|is_unique[user.nama_pengguna]',
+			[
+				'trim'      => 'Input dengan benar',
+				'is_unique' => '%s Sudah ada!!!.'
+			]
+		);
+		$this->form_validation->set_rules('nama_lengkap', 'Nama Lengkap', 'required|trim',
+			[
+				'required' => 'Nama Lengkap harus diisi.'
+			]
+		);
+		$this->form_validation->set_rules('password', 'Password', 'required|min_length[6]',
+			[
+				'required' => 'Password harus diisi.',
+				'min_length' => 'Password minimal 6 karakter.'
+			]
+		);
+		$this->form_validation->set_rules('hakakses', 'Hak Akses', 'required',
+			[
+				'required' => 'Hak Akses harus dipilih.'
+			]
+		);
+	
+		if ($this->form_validation->run() == false) {
+			$output['status'] = 201;
+			$output['message'] = validation_errors(); 
+			echo json_encode($output);
+		} else {
+			$data = [
+				'id_pengguna'   => $this->input->post('id_pengguna'),
+				'nama_pengguna' => $this->input->post('nama_pengguna'), 
+				'nama_lengkap'  => $this->input->post('nama_lengkap'), 
+				'password'      => password_hash($this->input->post('password'), PASSWORD_DEFAULT),
+				'status'        => $this->input->post('status'),
+				'hak_akses'     => $this->input->post('hakakses')
+			];
+	
+			try {
+				$this->db->insert('user', $data);
+				$output['status'] = 200;
+				$output['message'] = 'Data berhasil ditambahkan';
+			} catch (Exception $e) {
+				$output['status'] = 500;
+				$output['message'] = 'Terjadi kesalahan saat menyimpan data: ' . $e->getMessage();
+			}
+			echo json_encode($output);
+		}
+	}
+
+	?>
+
+
+<!-- script untuk edit -->
+<script>
+	$(document).ready(function(){
+		$('.edit-pengguna').on('click', function(){
+			var idPengguna = $(this).data('id');
+			// alert(idPengguna);
+		
+			$.ajax({
+				url: '<?= site_url('master/pengguna/get_pengguna')?>',
+				type: 'POST',
+				data: {id_pengguna: idPengguna},
+				dataType: 'json',
+				success: function(response) {
+					console.log(response);
+					// alert('Data diterima');
+					// Isi form modal dengan data dari response
+					$('#modal-edit-user #id_pengguna').val(response.id_pengguna);
+					$('#modal-edit-user #nama_pengguna').val(response.nama_pengguna);
+					$('#modal-edit-user #nama_lengkap').val(response.nama_lengkap);
+					$('#modal-edit-user #password').val(response.password);
+					$('#modal-edit-user select[name="id_role"]').val(response.id_role);
+					$('#modal-edit-user select[name="id_departement"]').val(response.id_departement);
+					$('#modal-edit-user select[name="id_atasan"]').val(response.id_atasan);
+					
+					$('#modal-edit-user').modal('show');
+				}
+			});
+
+		});
+
+	});
+</script>
+
+
+
+<script>
+	$(document).ready(function(){
+		// Fungsi untuk menampilkan atau menyembunyikan dropdown Atasan
+		function toggleAtasanDropdown(id_role) {
+			if (id_role == 3) { // Jika role ID 3 - User Request
+				$('#dropdown-atasan').show();
+				$('#id_atasan').attr('required', true); // Menambahkan atribut required jika ditampilkan
+			} else {
+				$('#dropdown-atasan').hide();
+				$('#id_atasan').removeAttr('required'); // Menghapus atribut required jika disembunyikan
+			}
+		}
+
+		// Ketika tombol edit-pengguna diklik
+		$('.edit-pengguna').on('click', function(){
+			var idPengguna = $(this).data('id');
+		
+			$.ajax({
+				url: '<?= site_url('master/pengguna/get_pengguna')?>',
+				type: 'POST',
+				data: {id_pengguna: idPengguna},
+				dataType: 'json',
+				success: function(response) {
+					console.log(response);
+					
+					// Isi form modal dengan data dari response
+					$('#modal-edit-user #id_pengguna').val(response.id_pengguna);
+					$('#modal-edit-user #nama_pengguna').val(response.nama_pengguna);
+					$('#modal-edit-user #nama_lengkap').val(response.nama_lengkap);
+					$('#modal-edit-user #password').val(response.password);
+					$('#modal-edit-user select[name="id_role"]').val(response.id_role);
+					$('#modal-edit-user select[name="id_departement"]').val(response.id_departement);
+					$('#modal-edit-user select[name="id_atasan"]').val(response.id_atasan);
+					
+					// Panggil fungsi untuk menyesuaikan dropdown Atasan
+					toggleAtasanDropdown(response.id_role);
+					
+					// Tampilkan modal edit
+					$('#modal-edit-user').modal('show');
+				}
+			});
+
+		});
+
+		// Ketika role diubah oleh pengguna
+		$('#id_role').change(function(){
+			var selectedRole = $(this).val();
+			toggleAtasanDropdown(selectedRole);
+		});
+	});
+</script>
+
+<script>
+	$(document).ready(function(){
+		// Fungsi untuk menampilkan atau menyembunyikan dropdown Atasan
+		function toggleAtasanDropdown(id_role, id_atasan) {
+			if (id_role == 3 && id_atasan) { // Jika role ID 3 - User Request dan memiliki atasan
+				$('#dropdown-atasan').show();
+				$('#id_atasan').attr('required', true); // Menambahkan atribut required jika ditampilkan
+			} else {
+				$('#dropdown-atasan').hide();
+				$('#id_atasan').removeAttr('required'); // Menghapus atribut required jika disembunyikan
+				$('#id_atasan').val(''); // Menghapus nilai dropdown Atasan
+			}
+		}
+
+		// Ketika tombol edit-pengguna diklik
+		$('.edit-pengguna').on('click', function(){
+			var idPengguna = $(this).data('id');
+		
+			$.ajax({
+				url: '<?= site_url('master/pengguna/get_pengguna')?>',
+				type: 'POST',
+				data: {id_pengguna: idPengguna},
+				dataType: 'json',
+				success: function(response) {
+					console.log(response);
+					
+					// Isi form modal dengan data dari response
+					$('#modal-edit-user #id_pengguna').val(response.id_pengguna);
+					$('#modal-edit-user #nama_pengguna').val(response.nama_pengguna);
+					$('#modal-edit-user #nama_lengkap').val(response.nama_lengkap);
+					$('#modal-edit-user #password').val(response.password);
+					$('#modal-edit-user select[name="id_role"]').val(response.id_role);
+					$('#modal-edit-user select[name="id_departement"]').val(response.id_departement);
+					$('#modal-edit-user select[name="id_atasan"]').val(response.id_atasan);
+					
+					// Panggil fungsi untuk menyesuaikan dropdown Atasan
+					toggleAtasanDropdown(response.id_role, response.id_atasan);
+					
+					// Tampilkan modal edit
+					$('#modal-edit-user').modal('show');
+				}
+			});
+
+		});
+
+		// Ketika role diubah oleh pengguna
+		$('#modal-edit-user').on('change', '#id_role', function(){
+			var selectedRole = $(this).val();
+			// Panggil toggleAtasanDropdown dengan nilai atasan kosong karena user belum memilih atasan baru
+			toggleAtasanDropdown(selectedRole, $('#id_atasan').val());
+		});
+	});
+</script>
+
+
+
+
+
 
